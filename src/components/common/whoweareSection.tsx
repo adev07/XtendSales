@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import whoWeAreImage from "@/assets/images/about.jpg";
 
 function WhoWeAreSection() {
     return (
-        <section className="bg-white py-20">
+        <section className="bg-white sm:py-20 py-10">
             <div className="container mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                     {/* Left Content */}
@@ -17,7 +18,7 @@ function WhoWeAreSection() {
                     >
                         {/* Main Heading */}
                         <motion.h2
-                            className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+                            className="text-3xl lg:text-5xl font-bold text-gray-900 leading-tight sm:text-left text-center"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 0.6 }}
@@ -30,17 +31,19 @@ function WhoWeAreSection() {
 
                         {/* Description */}
                         <motion.p
-                            className="text-lg text-gray-600 leading-relaxed"
+                            className="text-lg text-gray-600 leading-relaxed sm:text-left text-center"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            We're a team of industry experts with decades of experience in Oracle consulting, IT solutions, and business process transformation. We combine innovation and deep domain knowledge to deliver intelligent solutions that drive real business impact.
+                            We're a team of industry experts with extensive experience in Oracle consulting, IT Solutions, and Business Process Transformation.
+                            We combine innovation and deep domain knowledge to deliver intelligent solutions that drive business growth and improve your customer relations.
                         </motion.p>
 
                         {/* CTA Button */}
                         <motion.div
+                            className="flex justify-center sm:justify-start"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.6 }}
@@ -65,9 +68,9 @@ function WhoWeAreSection() {
                         viewport={{ once: true }}
                     >
                         <motion.img
-                            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                            src={whoWeAreImage}
                             alt="Professional team collaboration"
-                            className="w-full max-w-lg h-80 rounded-lg object-cover shadow-lg"
+                            className="w-full max-w-lg h-80 rounded-lg object-cover"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.3 }}
                         />

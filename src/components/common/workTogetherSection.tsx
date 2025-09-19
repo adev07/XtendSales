@@ -5,7 +5,7 @@ import workTogetherImg from "@/assets/images/Work Together Image.png";
 
 function WorkTogetherSection() {
     return (
-        <section className="bg-white py-20">
+        <section className="bg-gray-100 sm:py-20 py-10">
             <div className="container mx-auto px-4">
                 <div className="grid lg:grid-cols-2 gap-12 items-center justify-center">
                     {/* Left Content - Image */}
@@ -35,7 +35,7 @@ function WorkTogetherSection() {
                     >
                         {/* Main Heading */}
                         <motion.h2
-                            className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+                            className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight text-center sm:text-left"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
@@ -48,7 +48,7 @@ function WorkTogetherSection() {
 
                         {/* Description */}
                         <motion.p
-                            className="text-lg text-gray-600 leading-relaxed"
+                            className="text-lg text-gray-600 leading-relaxed text-center sm:text-left"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.6 }}
@@ -64,6 +64,7 @@ function WorkTogetherSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.6 }}
                             viewport={{ once: true }}
+                            className="flex justify-center sm:justify-start"
                         >
                             <Button
                                 size="lg"

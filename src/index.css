@@ -87,3 +87,112 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Embla Carousel Styles - Optimized for Performance */
+.embla {
+  overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.embla__container {
+  display: flex;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout style paint;
+  min-height: 400px;
+}
+
+@media (min-width: 768px) {
+  .embla__slide {
+    flex: 0 0 33.333%;
+  }
+}
+
+/* Optimize carousel performance */
+.embla__slide>div {
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout style paint;
+}
+
+/* Force hardware acceleration for all carousel elements */
+.embla * {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Loader animations */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(var(--primary), 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(var(--primary), 0.6);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.loader-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.loader-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.loader-shimmer {
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
