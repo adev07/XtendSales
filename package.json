@@ -10,7 +10,10 @@
     "lint:fix": "eslint --fix .",
     "preview": "vite preview",
     "format": "prettier --write ./src",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "pnpm install --lockfile-only",
+    "install:ci": "pnpm install --frozen-lockfile",
+    "install:force": "pnpm install --no-frozen-lockfile"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
