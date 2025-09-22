@@ -1,17 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, RefreshCw, Settings, Wifi, CheckCircle, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import hero from "@/assets/images/Hero-section.png";
 import heroImg from "@/assets/images/Shared.png";
 
 function HeroSection() {
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        navigate('/contact');
+    };
+
     return (
         <div className="min-h-screen bg-[#043873] relative">
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img src={hero} alt="hero background" className="w-full h-full object-cover" />
             </div>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 relative z-10">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-2 lg:py-4 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center min-h-[calc(100vh-120px)] sm:min-h-[calc(100vh-140px)]">
                     {/* Left Content */}
                     <motion.div
@@ -85,7 +92,8 @@ function HeroSection() {
                         >
                             <Button
                                 size="default"
-                                className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm sm:text-base px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg w-full sm:w-auto"
+                                onClick={handleGetStarted}
+                                className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm sm:text-base px-4 sm:px-6 py-2.5 sm:py-6 rounded-lg w-full sm:w-auto"
                             >
                                 Get Started Today
                                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />

@@ -2,8 +2,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import whoWeAreImage from "@/assets/images/about.jpg";
+import { useNavigate } from "react-router-dom";
 
 function WhoWeAreSection() {
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        navigate('/contact');
+    };
+
     return (
         <section className="bg-white sm:py-20 py-10">
             <div className="container mx-auto px-4">
@@ -51,6 +58,7 @@ function WhoWeAreSection() {
                         >
                             <Button
                                 size="lg"
+                                onClick={handleGetStarted}
                                 className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-base px-8 py-6 rounded-lg"
                             >
                                 Get Started

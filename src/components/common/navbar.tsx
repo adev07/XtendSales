@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button"
 import { Calendar, Menu, X } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 function navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+    const navigate = useNavigate();
+    const handleHome = () => {
+        navigate('/');
+    };
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
@@ -16,6 +20,7 @@ function navbar() {
             <div className="container mx-auto px-4 sm:px-6 text-white flex items-center h-full">
                 {/* Logo */}
                 <img
+                    onClick={handleHome}
                     className="cursor-pointer h-12 sm:h-[70px] object-contain"
                     src={logo} alt="logo"
                 />
@@ -39,6 +44,7 @@ function navbar() {
                 {/* Schedule Call Button - Desktop */}
                 <div className="hidden lg:block">
                     <Button
+                        onClick={() => window.location.href = 'tel:+971506537140'}
                         className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm xl:text-base px-3 xl:px-4 py-3 xl:py-5 rounded-lg"
                     >
                         <Calendar className="w-4 h-4 mr-2" />
@@ -123,7 +129,10 @@ function navbar() {
                                 <div className="mt-8">
                                     <Button
                                         className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-base px-6 py-4 rounded-lg w-full"
-                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            window.location.href = 'tel:+971506537140';
+                                        }}
                                     >
                                         <Calendar className="w-5 h-5 mr-2" />
                                         Schedule Call

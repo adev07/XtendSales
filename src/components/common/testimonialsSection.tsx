@@ -17,12 +17,6 @@ const testimonials: Testimonial[] = [
         title: "Group Managing Director",
     },
     {
-        quote:
-            "Xtendsales have been evaluated and approved for our sales and distribution management. As we are going through a major reshuffle of operations, we have put the implementation on hold until settled down certain internal affairs. We have been looking for a Vansales integrated with Tally ERP, and could not find anything until we meet Xtendsales people. project management solution.",
-        name: "Deputy General Manager",
-        title: "Leyson Pharmaceuticals LLC, Mascut, Sultante of Oman",
-    },
-    {
         quote: "Post-implementation, our sales team gained efficiency remarkably with the integration of Xtendsales mobility solution to our combined and comprehensive processes.",
         name: "Mr. Zainudeen Beeravunni",
         title: "Group Executive Director",
@@ -93,7 +87,7 @@ function TestimonialsSection() {
         testimonials.map((t, idx) => (
             <div key={idx} className="embla__slide flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] md:flex-[0_0_33.333%] lg:flex-[0_0_33.333%] px-2 sm:px-3">
                 <div
-                    className={`${idx === 0 ? "bg-white text-gray-900" : "bg-blue-500 text-white"} rounded-xl p-4 sm:p-6 border h-full flex flex-col`}
+                    className="bg-blue-500 text-white rounded-xl p-4 sm:p-6 border h-full flex flex-col"
                     style={{
                         willChange: 'transform',
                         transform: 'translateZ(0)',
@@ -102,7 +96,7 @@ function TestimonialsSection() {
                 >
                     {/* Header with quote icon */}
                     <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-blue-100 mb-3 sm:mb-4">
-                        <Quote className={`${idx === 0 ? "text-blue-500" : "text-blue-700"} w-4 h-4 sm:w-5 sm:h-5`} />
+                        <Quote className="text-blue-700 w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
 
                     {/* Content area that grows to fill available space */}
@@ -112,18 +106,16 @@ function TestimonialsSection() {
                         </p>
 
                         {/* Separator */}
-                        <div className={`${idx === 0 ? "bg-gray-200" : "bg-blue-300"} h-px w-full mb-3 sm:mb-4`} />
+                        <div className="bg-blue-300 h-px w-full mb-3 sm:mb-4" />
 
                         {/* Footer with author info - always at bottom */}
                         <div className="flex items-center gap-2 sm:gap-3 mt-auto">
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${idx === 0 ? "bg-gray-200" : "bg-blue-300"
-                                }`}>
-                                <User className={`w-4 h-4 sm:w-5 sm:h-5 ${idx === 0 ? "text-gray-600" : "text-blue-700"
-                                    }`} />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-300">
+                                <User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-700" />
                             </div>
                             <div className="min-w-0">
                                 <p className="font-semibold text-xs sm:text-sm truncate">{t.name}</p>
-                                <p className={`${idx === 0 ? "text-gray-500" : "text-blue-100"} text-xs truncate`}>{t.title}</p>
+                                <p className="text-blue-100 text-xs truncate">{t.title}</p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +125,7 @@ function TestimonialsSection() {
     );
 
     return (
-        <section className="bg-white py-16 sm:py-20 lg:py-24">
+        <section className="bg-white py-16 sm:py-18 lg:py-18">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Heading */}
                 <motion.div

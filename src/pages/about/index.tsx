@@ -17,8 +17,15 @@ import {
     Heart,
     Lightbulb
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function About() {
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        navigate('/contact');
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -217,6 +224,7 @@ function About() {
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                             <Button
                                 size="default"
+                                onClick={handleGetStarted}
                                 className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4"
                             >
                                 Get Started Today
@@ -225,6 +233,7 @@ function About() {
                             <Button
                                 size="default"
                                 variant="outline"
+                                onClick={handleGetStarted}
                                 className="border-white text-white bg-[#050e4c] font-semibold px-6 sm:px-8 py-3 sm:py-4"
                             >
                                 Contact Our Team

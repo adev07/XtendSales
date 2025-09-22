@@ -2,8 +2,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import workTogetherImg from "@/assets/images/Work Together Image.png";
+import { useNavigate } from "react-router-dom";
 
 function WorkTogetherSection() {
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        navigate('/contact');
+    };
+
     return (
         <section className="bg-gray-100 sm:py-20 py-10">
             <div className="container mx-auto px-4">
@@ -67,6 +74,7 @@ function WorkTogetherSection() {
                             className="flex justify-center sm:justify-start"
                         >
                             <Button
+                                onClick={handleGetStarted}
                                 size="lg"
                                 className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-base px-8 py-6 rounded-lg"
                             >

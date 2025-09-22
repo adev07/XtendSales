@@ -40,9 +40,37 @@ function Contact() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would typically send the form data to your backend
-        console.log('Form submitted:', formData);
+
+        // Create email content
+        const subject = `Contact Form Submission - ${formData.serviceType || 'General Inquiry'}`;
+        const body = `
+Dear XtendSales Team,
+
+I would like to get in touch regarding your services. Please find my details below:
+
+Name: ${formData.firstName} ${formData.lastName}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Company: ${formData.company}
+Service Interest: ${formData.serviceType}
+
+Message:
+${formData.message}
+
+Best regards,
+${formData.firstName} ${formData.lastName}
+        `.trim();
+
+        // Create mailto URL
+        const mailtoUrl = `mailto:info@xtendsales.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open default email client
+        window.location.href = mailtoUrl;
+
+        // Show success message
         setIsSubmitted(true);
+
+        console.log('Form submitted via mailto:', formData);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -174,7 +202,7 @@ function Contact() {
                                                 value={formData.phone}
                                                 onChange={handleInputChange}
                                                 className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                                placeholder="+971 50 123 4567"
+                                                placeholder="+97150 6537140"
                                             />
                                         </div>
                                         <div>
@@ -259,12 +287,23 @@ function Contact() {
                                     <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <CheckCircle className="w-8 h-8 text-green-600" />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Email Client Opened!</h3>
                                     <p className="text-gray-600 mb-6">
-                                        Thank you for contacting us. We'll get back to you within 24 hours.
+                                        Your default email client should have opened with the message pre-filled. Please send the email to complete your inquiry.
                                     </p>
                                     <Button
-                                        onClick={() => setIsSubmitted(false)}
+                                        onClick={() => {
+                                            setIsSubmitted(false);
+                                            setFormData({
+                                                firstName: '',
+                                                lastName: '',
+                                                email: '',
+                                                phone: '',
+                                                company: '',
+                                                message: '',
+                                                serviceType: ''
+                                            });
+                                        }}
                                         variant="outline"
                                         className="border-gray-300 text-gray-700 hover:bg-gray-50"
                                     >
@@ -291,10 +330,26 @@ function Contact() {
                                             <MapPin className="w-6 h-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-gray-900 mb-1">Address</h4>
+                                            <h4 className="font-semibold text-gray-900 mb-1">Dubai Office</h4>
                                             <p className="text-gray-600">
-                                                SaaS Mobility Technology LLC<br />
+                                                Post Box No : 78029<br />
+                                                Aspin Tower, Sheikh Zayed Road<br />
                                                 Dubai, United Arab Emirates
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-4">
+                                        <div className="bg-blue-100 p-3 rounded-lg">
+                                            <MapPin className="w-6 h-6 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 mb-1">Hyderabad Office</h4>
+                                            <p className="text-gray-600">
+                                                SY.NO # 132, FLAT 904<br />
+                                                BHAVYAS AKHILA EXOTICA<br />
+                                                HYDERNAGAR, HYDERABAD<br />
+                                                TELANGANA - 500085
                                             </p>
                                         </div>
                                     </div>
@@ -305,8 +360,15 @@ function Contact() {
                                         </div>
                                         <div>
                                             <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                                            <p className="text-gray-600">+971 50 123 4567</p>
-                                            <p className="text-gray-600">+971 4 234 5678</p>
+                                            <p className="text-gray-600">
+                                                Quick Enquiry:
+                                                <a
+                                                    href="tel:+971506537140"
+                                                    className="text-[#4F9CF9] hover:text-[#4F9CF9]/80 font-medium ml-1 hover:underline transition-colors duration-200 cursor-pointer"
+                                                >
+                                                    +97150 6537140
+                                                </a>
+                                            </p>
                                         </div>
                                     </div>
 
@@ -317,7 +379,6 @@ function Contact() {
                                         <div>
                                             <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
                                             <p className="text-gray-600">info@xtendsales.com</p>
-                                            <p className="text-gray-600">support@xtendsales.com</p>
                                         </div>
                                     </div>
 
