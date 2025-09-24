@@ -11,9 +11,33 @@ import {
     MessageSquare,
     Calendar,
     CheckCircle,
-    Globe
+    Globe,
+    Loader2
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
+import emailjs from '@emailjs/browser';
+import ReCAPTCHA from 'react-google-recaptcha';
+
+// EmailJS configuration - temporary inline config to fix import issue
+const EMAILJS_CONFIG = {
+    SERVICE_ID: 'YOUR_SERVICE_ID',
+    TEMPLATE_ID: 'YOUR_TEMPLATE_ID',
+    PUBLIC_KEY: 'YOUR_PUBLIC_KEY'
+};
+
+// reCAPTCHA configuration - Replace with your actual site key
+const RECAPTCHA_SITE_KEY = '6LenPNIrAAAAAHK4CiqFX6cPTaI0B6Kl4oEwmYoo'; // Get this from Google reCAPTCHA console
+
+interface EmailTemplateParams extends Record<string, unknown> {
+    to_email: string;
+    from_name: string;
+    from_email: string;
+    phone: string;
+    company: string;
+    service_type: string;
+    message: string;
+    subject: string;
+}
 
 interface ContactForm {
     firstName: string;
@@ -24,6 +48,7 @@ interface ContactForm {
     message: string;
     serviceType: string;
 }
+
 
 function Contact() {
     const [formData, setFormData] = useState<ContactForm>({
@@ -37,40 +62,70 @@ function Contact() {
     });
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
+        setSubmitError(null);
 
-        // Create email content
-        const subject = `Contact Form Submission - ${formData.serviceType || 'General Inquiry'}`;
-        const body = `
-Dear XtendSales Team,
+        // Validate reCAPTCHA
+        if (!captchaValue) {
+            setSubmitError('Please complete the CAPTCHA verification.');
+            setIsLoading(false);
+            return;
+        }
 
-I would like to get in touch regarding your services. Please find my details below:
+        try {
+            // Initialize EmailJS with configuration
+            emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
 
-Name: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Company: ${formData.company}
-Service Interest: ${formData.serviceType}
+            // Prepare template parameters for EmailJS
+            const templateParams: EmailTemplateParams = {
+                to_email: 'info@xtendsales.com', // Recipient email
+                from_name: `${formData.firstName} ${formData.lastName}`,
+                from_email: formData.email,
+                phone: formData.phone,
+                company: formData.company,
+                service_type: formData.serviceType || 'General Inquiry',
+                message: formData.message,
+                subject: `Contact Form Submission - ${formData.serviceType || 'General Inquiry'}`
+            };
 
-Message:
-${formData.message}
+            // Send email using EmailJS
+            const response = await emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                templateParams
+            );
 
-Best regards,
-${formData.firstName} ${formData.lastName}
-        `.trim();
+            console.log('Email sent successfully:', response);
 
-        // Create mailto URL
-        const mailtoUrl = `mailto:info@xtendsales.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            // Show success message
+            setIsSubmitted(true);
 
-        // Open default email client
-        window.location.href = mailtoUrl;
+            // Reset form and CAPTCHA
+            setFormData({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                company: '',
+                message: '',
+                serviceType: ''
+            });
+            setCaptchaValue(null);
+            recaptchaRef.current?.reset();
 
-        // Show success message
-        setIsSubmitted(true);
-
-        console.log('Form submitted via mailto:', formData);
+        } catch (error) {
+            console.error('Failed to send email:', error);
+            setSubmitError('Failed to send message. Please try again or contact us directly.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -79,6 +134,13 @@ ${formData.firstName} ${formData.lastName}
             ...prev,
             [name]: value
         }));
+    };
+
+    const handleCaptchaChange = (value: string | null) => {
+        setCaptchaValue(value);
+        if (submitError && submitError.includes('CAPTCHA')) {
+            setSubmitError(null); // Clear CAPTCHA error when user completes it
+        }
     };
 
     return (
@@ -140,143 +202,185 @@ ${formData.firstName} ${formData.lastName}
                             </div>
 
                             {!isSubmitted ? (
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                                                First Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="firstName"
-                                                name="firstName"
-                                                value={formData.firstName}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                                placeholder="John"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Last Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="lastName"
-                                                name="lastName"
-                                                value={formData.lastName}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                                placeholder="Doe"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Email Address *
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            required
-                                            className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                            placeholder="john.doe@company.com"
-                                        />
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Phone Number
-                                            </label>
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                name="phone"
-                                                value={formData.phone}
-                                                onChange={handleInputChange}
-                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                                placeholder="+97150 6537140"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Company Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="company"
-                                                name="company"
-                                                value={formData.company}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
-                                                placeholder="Your Company"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Service Interest *
-                                        </label>
-                                        <div className="relative">
-                                            <select
-                                                id="serviceType"
-                                                name="serviceType"
-                                                value={formData.serviceType}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 appearance-none cursor-pointer pr-12"
-                                            >
-                                                <option value="">Select a service</option>
-                                                <option value="xtendsales">XtendSales - Mobile Sales Force Automation</option>
-                                                <option value="vansales">Xtend Van Sales - On-the-Go Sales Management</option>
-                                                <option value="delivery">Xtendsales Delivery Management</option>
-                                                <option value="attendance">Xtend Attendance - Workforce Monitoring</option>
-                                                <option value="aixpos">AIXPOS - Point of Sale System</option>
-                                                <option value="xtendb2b">XtendB2B - B2B Solutions</option>
-                                                <option value="consultation">General Consultation</option>
-                                            </select>
-                                            <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
-                                                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
+                                <>
+                                    {submitError && (
+                                        <motion.div
+                                            className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <div className="bg-red-100 p-1 rounded-full">
+                                                    <svg className="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <p className="text-red-700 text-sm font-medium">{submitError}</p>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    First Name *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="firstName"
+                                                    name="firstName"
+                                                    value={formData.firstName}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
+                                                    placeholder="John"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Last Name *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="lastName"
+                                                    name="lastName"
+                                                    value={formData.lastName}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
+                                                    placeholder="Doe"
+                                                />
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div>
-                                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Message *
-                                        </label>
-                                        <textarea
-                                            id="message"
-                                            name="message"
-                                            value={formData.message}
-                                            onChange={handleInputChange}
-                                            required
-                                            rows={5}
-                                            className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
-                                            placeholder="Tell us about your business needs and how we can help..."
-                                        />
-                                    </div>
+                                        <div>
+                                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Email Address *
+                                            </label>
+                                            <input
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
+                                                placeholder="john.doe@company.com"
+                                            />
+                                        </div>
 
-                                    <Button
-                                        type="submit"
-                                        size="lg"
-                                        className="w-full bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                                    >
-                                        Send Message
-                                        <Send className="w-5 h-5 ml-2" />
-                                    </Button>
-                                </form>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Phone Number
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    name="phone"
+                                                    value={formData.phone}
+                                                    onChange={handleInputChange}
+                                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
+                                                    placeholder="+97150 6537140"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Company Name *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="company"
+                                                    name="company"
+                                                    value={formData.company}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500"
+                                                    placeholder="Your Company"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Service Interest *
+                                            </label>
+                                            <div className="relative">
+                                                <select
+                                                    id="serviceType"
+                                                    name="serviceType"
+                                                    value={formData.serviceType}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 appearance-none cursor-pointer pr-12"
+                                                >
+                                                    <option value="">Select a service</option>
+                                                    <option value="xtendsales">XtendSales - Mobile Sales Force Automation</option>
+                                                    <option value="vansales">Xtend Van Sales - On-the-Go Sales Management</option>
+                                                    <option value="delivery">Xtendsales Delivery Management</option>
+                                                    <option value="attendance">Xtend Attendance - Workforce Monitoring</option>
+                                                    <option value="aixpos">AIXPOS - Point of Sale System</option>
+                                                    <option value="xtendb2b">XtendB2B - B2B Solutions</option>
+                                                    <option value="consultation">General Consultation</option>
+                                                </select>
+                                                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                                                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Message *
+                                            </label>
+                                            <textarea
+                                                id="message"
+                                                name="message"
+                                                value={formData.message}
+                                                onChange={handleInputChange}
+                                                required
+                                                rows={5}
+                                                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#4F9CF9] focus:border-[#4F9CF9] focus:bg-white transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+                                                placeholder="Tell us about your business needs and how we can help..."
+                                            />
+                                        </div>
+
+                                        {/* reCAPTCHA */}
+                                        <div className="flex justify-center">
+                                            <div className="transform scale-90 origin-center">
+                                                <ReCAPTCHA
+                                                    ref={recaptchaRef}
+                                                    sitekey={RECAPTCHA_SITE_KEY}
+                                                    onChange={handleCaptchaChange}
+                                                    theme="light"
+                                                    size="normal"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            type="submit"
+                                            size="lg"
+                                            disabled={isLoading}
+                                            className="w-full bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                                    Sending...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Send Message
+                                                    <Send className="w-5 h-5 ml-2" />
+                                                </>
+                                            )}
+                                        </Button>
+                                    </form>
+                                </>
                             ) : (
                                 <motion.div
                                     className="text-center py-12"
@@ -287,13 +391,16 @@ ${formData.firstName} ${formData.lastName}
                                     <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <CheckCircle className="w-8 h-8 text-green-600" />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Email Client Opened!</h3>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent Successfully!</h3>
                                     <p className="text-gray-600 mb-6">
-                                        Your default email client should have opened with the message pre-filled. Please send the email to complete your inquiry.
+                                        Thank you for reaching out! Your message has been sent directly to our team. We'll get back to you within 24 hours.
                                     </p>
                                     <Button
                                         onClick={() => {
                                             setIsSubmitted(false);
+                                            setSubmitError(null);
+                                            setCaptchaValue(null);
+                                            recaptchaRef.current?.reset();
                                             setFormData({
                                                 firstName: '',
                                                 lastName: '',
@@ -346,7 +453,7 @@ ${formData.firstName} ${formData.lastName}
                                         <div>
                                             <h4 className="font-semibold text-gray-900 mb-1">Hyderabad Office</h4>
                                             <p className="text-gray-600">
-                                                SY.NO # 132, FLAT 904<br />
+                                                SY.NO # 132<br />
                                                 BHAVYAS AKHILA EXOTICA<br />
                                                 HYDERNAGAR, HYDERABAD<br />
                                                 TELANGANA - 500085
@@ -366,7 +473,15 @@ ${formData.firstName} ${formData.lastName}
                                                     href="tel:+971506537140"
                                                     className="text-[#4F9CF9] hover:text-[#4F9CF9]/80 font-medium ml-1 hover:underline transition-colors duration-200 cursor-pointer"
                                                 >
-                                                    +97150 6537140
+                                                    +97150 6537140 (UAE)
+                                                </a>
+                                            </p>
+                                            <p className="text-gray-600 mt-1">
+                                                <a
+                                                    href="tel:+917093791397"
+                                                    className="text-[#4F9CF9] hover:text-[#4F9CF9]/80 font-medium hover:underline transition-colors duration-200 cursor-pointer"
+                                                >
+                                                    +9170937 91397 (India)
                                                 </a>
                                             </p>
                                         </div>
@@ -406,20 +521,32 @@ ${formData.firstName} ${formData.lastName}
                                 <p className="text-white/90 mb-4">
                                     Serving businesses across the Middle East, Asia, and beyond with cutting-edge mobility solutions.
                                 </p>
-                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div className="grid grid-cols-3 gap-4 text-sm">
                                     <div>
                                         <p className="font-semibold">UAE</p>
-                                        <p className="text-white/80">Primary Operations</p>
+                                        <p className="text-white/80">Head Office</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">KSA</p>
+                                        <p className="text-white/80">Business Connect</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Qatar</p>
+                                        <p className="text-white/80">Business Connect</p>
                                     </div>
                                     <div>
                                         <p className="font-semibold">Oman</p>
-                                        <p className="text-white/80">Regional Office</p>
+                                        <p className="text-white/80">Business Connect</p>
                                     </div>
                                     <div>
-                                        <p className="font-semibold">Saudi Arabia</p>
-                                        <p className="text-white/80">Partner Network</p>
+                                        <p className="font-semibold">Bahrain</p>
+                                        <p className="text-white/80">Business Connect</p>
                                     </div>
                                     <div>
+                                        <p className="font-semibold">Kuwait</p>
+                                        <p className="text-white/80">Business Connect</p>
+                                    </div>
+                                    <div className="col-span-3">
                                         <p className="font-semibold">India</p>
                                         <p className="text-white/80">Development Center</p>
                                     </div>

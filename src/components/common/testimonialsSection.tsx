@@ -125,7 +125,7 @@ function TestimonialsSection() {
     );
 
     return (
-        <section className="bg-white py-16 sm:py-18 lg:py-18">
+        <section id="testimonials" className="bg-white py-16 sm:py-18 lg:py-18">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Heading */}
                 <motion.div

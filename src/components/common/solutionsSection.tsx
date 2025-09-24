@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
     Smartphone,
     Truck,
@@ -78,6 +79,8 @@ const solutions: Solution[] = [
 ];
 
 function SolutionsSection() {
+    const navigate = useNavigate();
+
     return (
         <section className="bg-white py-12 sm:py-16 lg:pt-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,6 +147,7 @@ function SolutionsSection() {
                                 {/* Learn More Button */}
                                 <div className="mt-auto">
                                     <Button
+                                        onClick={() => navigate(`/solutions`)}
                                         variant="outline"
                                         className="w-full group-hover:bg-[#4F9CF9] group-hover:text-white group-hover:border-[#4F9CF9] transition-all duration-300 text-sm sm:text-base py-2 sm:py-3"
                                     >

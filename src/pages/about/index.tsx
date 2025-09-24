@@ -50,15 +50,15 @@ function About() {
                         <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
                             <div className="flex items-center justify-center gap-2">
                                 <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
-                                <span>10+ Years Experience</span>
+                                <span>6+ Years Experience</span>
                             </div>
                             <div className="flex items-center justify-center gap-2">
                                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                                <span>500+ Happy Clients</span>
+                                <span>10+ Happy Clients</span>
                             </div>
                             <div className="flex items-center justify-center gap-2">
                                 <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-                                <span>4 Countries</span>
+                                <span>6 Countries</span>
                             </div>
                         </div>
                     </motion.div>
@@ -225,18 +225,10 @@ function About() {
                             <Button
                                 size="default"
                                 onClick={handleGetStarted}
-                                className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4"
+                                className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold px-6 sm:px-8 py-3 sm:py-6"
                             >
                                 Get Started Today
-                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-                            </Button>
-                            <Button
-                                size="default"
-                                variant="outline"
-                                onClick={handleGetStarted}
-                                className="border-white text-white bg-[#050e4c] font-semibold px-6 sm:px-8 py-3 sm:py-4"
-                            >
-                                Contact Our Team
+                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
                         </div>
                     </motion.div>

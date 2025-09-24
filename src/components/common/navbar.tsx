@@ -44,12 +44,12 @@ function navbar() {
                 {/* Schedule Call Button - Desktop */}
                 <div className="hidden lg:block">
                     <Button
-                        onClick={() => window.location.href = 'tel:+971506537140'}
+                        onClick={() => navigate('/contact')}
                         className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm xl:text-base px-3 xl:px-4 py-3 xl:py-5 rounded-lg"
                     >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        <span className="hidden xl:inline">Schedule Call</span>
-                        <span className="xl:hidden">Call</span>
+                        <Calendar className="w-4 h-4" />
+                        <span className="hidden xl:inline">Get in Touch</span>
+                        <span className="xl:hidden">Get in Touch</span>
                     </Button>
                 </div>
 
@@ -129,13 +129,10 @@ function navbar() {
                                 <div className="mt-8">
                                     <Button
                                         className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-base px-6 py-4 rounded-lg w-full"
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            window.location.href = 'tel:+971506537140';
-                                        }}
+                                        onClick={() => navigate('/contact')}
                                     >
                                         <Calendar className="w-5 h-5 mr-2" />
-                                        Schedule Call
+                                        Get in Touch
                                     </Button>
                                 </div>
                             </div>

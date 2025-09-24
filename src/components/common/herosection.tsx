@@ -96,7 +96,7 @@ function HeroSection() {
                                 className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-sm sm:text-base px-4 sm:px-6 py-2.5 sm:py-6 rounded-lg w-full sm:w-auto"
                             >
                                 Get Started Today
-                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
                         </motion.div>
                     </motion.div>

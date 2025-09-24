@@ -19,6 +19,7 @@ import {
     Users,
     ShoppingCart
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Solution {
     id: number;
@@ -116,6 +117,12 @@ const solutions: Solution[] = [
 ];
 
 function Solutions() {
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        navigate('/contact');
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -285,20 +292,14 @@ function Solutions() {
                         <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
                             Join thousands of businesses that have already revolutionized their operations with XtendSales
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                             <Button
-                                size="lg"
-                                className="bg-white text-[#043873] hover:bg-gray-100 font-semibold px-8 py-6"
+                                size="default"
+                                onClick={handleGetStarted}
+                                className="bg-[#4F9CF9] hover:bg-[#4F9CF9]/90 text-white font-semibold px-6 sm:px-8 py-3 sm:py-6"
                             >
-                                Start Free Trial
-                                <ArrowRight className="w-5 h-5 ml-2" />
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="border-white text-white font-semibold px-8 py-6 bg-[#050e4c]"
-                            >
-                                Schedule Demo
+                                Get Started Today
+                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
                         </div>
                     </motion.div>
